@@ -16,7 +16,7 @@ export default function Login({ onLogin }) {
     try {
       if (mode === 'register') {
         await register(form);
-        setNotice('Account created. You can now log in.');
+        setNotice('Account created. You can now Log in.');
         setMode('login');
       } else {
         onLogin(await login(form.username, form.password));
