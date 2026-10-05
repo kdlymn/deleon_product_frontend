@@ -30,7 +30,10 @@ export default function Login({ onLogin }) {
 
   return (
     <div className="card auth">
-      <h1>{mode === 'login' ? 'Login' : 'Create account'}</h1>
+      <div className="auth-brand"><span className="brand-mark">S</span><span className="brand-name">silo<span>.</span><small>STOCKROOM</small></span></div>
+      <p className="eyebrow">INVENTORY MANAGEMENT</p>
+      <h1>{mode === 'login' ? 'Welcome back.' : 'Make an account.'}</h1>
+      <p className="auth-intro">{mode === 'login' ? 'Sign in to your stockroom.' : 'Create your stockroom account.'}</p>
       {error && <div className="alert error">{error}</div>}
       {notice && <div className="alert success">{notice}</div>}
 

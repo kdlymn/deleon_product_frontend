@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createProduct, updateProduct, errorMessage } from '../api.js';
 
 const empty = { product_name: '', description: '', price: '', quantity: '' };
@@ -8,6 +8,14 @@ export default function ProductForm({ product, onSaved, onCancel }) {
   const [form, setForm] = useState(editing ? { ...product } : empty);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape' && !busy) onCancel();
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [busy, onCancel]);
 
   const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
 
@@ -31,8 +39,8 @@ export default function ProductForm({ product, onSaved, onCancel }) {
 
   return (
     <div className="modal-backdrop" onClick={onCancel}>
-      <div className="card modal" onClick={(e) => e.stopPropagation()}>
-        <h2>{editing ? 'Edit product' : 'Add product'}</h2>
+      <div className="card modal" role="dialog" aria-modal="true" aria-labelledby="product-form-title" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-heading"><div><p className="eyebrow">PRODUCT CATALOG</p><h2 id="product-form-title">{editing ? 'Edit product' : 'Add product'}</h2></div><button type="button" className="icon-button modal-close" onClick={onCancel} aria-label="Close dialog">×</button></div>
         {error && <div className="alert error">{error}</div>}
         <form onSubmit={submit}>
           <label>Product name
