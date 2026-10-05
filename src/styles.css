@@ -145,6 +145,8 @@ th:last-child, td:last-child { padding-right: 19px; }
 .alert.error { border-color: #f0d2cb; background: #fff4f1; color: #a94738; }
 .alert.success { border-color: #d7e9d3; background: #f1f8ee; color: #466f42; cursor: pointer; }
 .alert.success span { font-size: 17px; }
+.access-note { margin: -8px 0 16px; padding: 10px 12px; border-left: 3px solid #dfbb5d; background: #fbf7e9; color: #76653c; font-size: 10px; line-height: 1.6; }
+.access-note strong { color: #57471f; }
 .modal-backdrop { position: fixed; inset: 0; z-index: 5; display: flex; align-items: center; justify-content: center; overflow-y: auto; padding: 20px; background: #152b23b8; backdrop-filter: blur(3px); }
 .modal { width: 100%; max-width: 490px; padding: 27px; border: 1px solid #e6ebe5; border-radius: 6px; background: #fff; box-shadow: 0 20px 60px #112c2140; animation: modal-in .2s ease-out both; }
 @keyframes modal-in { from { opacity: 0; transform: translateY(8px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }

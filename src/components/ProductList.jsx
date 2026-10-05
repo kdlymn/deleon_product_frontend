@@ -5,6 +5,7 @@ import ProductForm from './ProductForm.jsx';
 const peso = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
 
 export default function ProductList({ user, onLogout }) {
+  const isAdmin = user.role === 'admin';
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -83,7 +84,7 @@ export default function ProductList({ user, onLogout }) {
           <div className="sidebar-status"><span className="status-dot" /> Secure session</div>
           <div className="account-row">
             <span className="avatar">{user.username.slice(0, 1).toUpperCase()}</span>
-            <span className="account-name">{user.username}<small>Account</small></span>
+            <span className="account-name">{user.username}<small>{isAdmin ? 'Administrator' : 'Read only'}</small></span>
             <button className="icon-button logout-button" onClick={onLogout} aria-label="Log out" title="Log out">↗</button>
           </div>
         </div>
@@ -102,11 +103,12 @@ export default function ProductList({ user, onLogout }) {
               <h1>Inventory <span className="heading-period">.</span></h1>
               <p className="page-subtitle">Your products, all in one place.</p>
             </div>
-            <button className="button-primary" onClick={() => setFormFor({})}><span className="button-plus">+</span> Add product</button>
+            {isAdmin && <button className="button-primary" onClick={() => setFormFor({})}><span className="button-plus">+</span> Add product</button>}
           </section>
 
           {error && <div className="alert error" role="alert">{error}</div>}
           {notice && <button className="alert success" onClick={() => setNotice('')} aria-label="Dismiss notification">{notice}<span>×</span></button>}
+          {!isAdmin && <div className="access-note" role="status">This API account has read-only access. Product changes require the account role <strong>admin</strong>.</div>}
 
           <section className="metrics-grid" aria-label="Inventory summary">
             <article className="metric-card metric-total"><div className="metric-top"><span>Total products</span><span className="metric-icon">▦</span></div><strong>{loading ? '—' : products.length.toString().padStart(2, '0')}</strong><small>ACTIVE SKUs</small></article>
@@ -132,9 +134,9 @@ export default function ProductList({ user, onLogout }) {
             <div className="table-wrap">
               {loading ? <div className="empty-state"><span className="loading-mark">◌</span><p>Loading inventory</p></div> : (
                 <table>
-                  <thead><tr><th className="id-col">ITEM</th><th>PRODUCT</th><th>STATUS</th><th className="num">PRICE</th><th className="num">IN STOCK</th><th className="date-col">ADDED</th><th><span className="sr-only">Actions</span></th></tr></thead>
+                  <thead><tr><th className="id-col">ITEM</th><th>PRODUCT</th><th>STATUS</th><th className="num">PRICE</th><th className="num">IN STOCK</th><th className="date-col">ADDED</th>{isAdmin && <th><span className="sr-only">Actions</span></th>}</tr></thead>
                   <tbody>
-                    {visibleProducts.length === 0 && <tr><td colSpan="7"><div className="empty-state"><span className="empty-mark">—</span><p>{products.length ? 'No matching products' : 'Your catalog is empty'}</p><small>{products.length ? 'Try another search or filter.' : 'Add a product to get your stockroom started.'}</small></div></td></tr>}
+                    {visibleProducts.length === 0 && <tr><td colSpan={isAdmin ? 7 : 6}><div className="empty-state"><span className="empty-mark">—</span><p>{products.length ? 'No matching products' : 'Your catalog is empty'}</p><small>{products.length ? 'Try another search or filter.' : 'Add a product to get your stockroom started.'}</small></div></td></tr>}
                     {visibleProducts.map((product, index) => {
                       const quantity = Number(product.quantity);
                       const status = quantity === 0 ? 'out' : quantity <= 5 ? 'low' : 'in';
@@ -146,7 +148,7 @@ export default function ProductList({ user, onLogout }) {
                           <td className="num price-cell" data-label="Price">{peso.format(product.price)}</td>
                           <td className="num quantity-cell" data-label="In stock"><strong>{quantity.toLocaleString()}</strong><small> units</small></td>
                           <td className="date-col date-cell" data-label="Added">{product.created_at || '—'}</td>
-                          <td className="row-actions"><button className="text-action" onClick={() => setFormFor(product)}>Edit</button><button className="text-action delete-action" onClick={() => handleDelete(product)}>Delete</button></td>
+                          {isAdmin && <td className="row-actions"><button className="text-action" onClick={() => setFormFor(product)}>Edit</button><button className="text-action delete-action" onClick={() => handleDelete(product)}>Delete</button></td>}
                         </tr>
                       );
                     })}
